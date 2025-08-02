@@ -11,6 +11,7 @@ export const Router = () => {
           <Route path="/search" element={<_.Search />} />
           <Route path="/detail/:id" element={<_.Detail />} />
           <Route path="/my" element={<_.Home />} />
+          <Route path='/create' element={<_.CreateStory/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
