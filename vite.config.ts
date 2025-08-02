@@ -19,6 +19,8 @@ export default defineConfig({
         short_name: 'HorrorApp',
         description: 'A horror experience app',
         theme_color: '#000000',
+        start_url: "/",
+        display: "standalone",
         icons: [
           {
             src: 'pwa-192x192.png',
