@@ -1,6 +1,6 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import * as _ from "../pages";
-import { Layout } from "./Layout";
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import * as _ from '../pages';
+import { Layout } from './Layout';
 
 export const Router = () => {
   return (
@@ -11,5 +11,5 @@ export const Router = () => {
         </Route>
       </Routes>
     </BrowserRouter>
-  )
-}
+  );
+};
