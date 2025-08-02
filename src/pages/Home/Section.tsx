@@ -45,12 +45,12 @@ export const Section = ({ title, type }: IProp) => {
             <div className="w-[1px] h-full snap-start mr-1" />
             {stories.slice(0, 5).map(story => (
               <button
-                key={story.id}
+                key={story._id}
                 className="flex items-start flex-col gap-1 shrink-0 snap-start scroll-ml-[16px]"
-                onClick={() => navigate(`/detail/${story.id}`)}
+                onClick={() => navigate(`/detail/${story._id}`)}
               >
                 <img
-                  src={story.image}
+                  src={story.thumbnailUrl}
                   alt={story.title}
                   className="w-[165px] h-[110px] rounded-[4px] border border-[#FFFFFF30]"
                 />

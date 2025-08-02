@@ -35,14 +35,14 @@ export const MyStory = () => {
         // 정상 데이터
         myStories.map((story, index) => (
           <Link
-            key={story.id}
-            to={`/detail/${story.id}`}
+            key={story._id}
+            to={`/detail/${story._id}`}
             className={`flex gap-3 ${
               index !== 0 && 'pt-[30px] border-t border-[#2A2A2AFF]'
             }`}
           >
             <img
-              src={story.image || '/sample_nightmare.jpg'}
+              src={story.thumbnailUrl || '/sample_nightmare.jpg'}
               className="w-[165px] h-[110px] rounded-[4px] border border-[#FFFFFF30]"
               alt={story.title}
             />

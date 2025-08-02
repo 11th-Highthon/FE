@@ -49,12 +49,12 @@ export const Hit = () => {
         <div className="w-[1px] h-full mr-1" />
         {displayStories.map((story, index) => (
           <button
-            key={story.id}
+            key={story._id}
             className="flex gap-2 shrink-0 snap-start scroll-ml-[16px]"
-            onClick={() => navigate(`/detail/${story.id}`)}
+            onClick={() => navigate(`/detail/${story._id}`)}
           >
             <img
-              src={story.image}
+              src={story.thumbnailUrl}
               alt={story.title}
               className="w-[165px] h-[110px] rounded-[4px] border border-[#FFFFFF30]"
             />

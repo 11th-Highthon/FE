@@ -10,10 +10,10 @@ export const getAllStories = async (): Promise<Story[]> => {
     console.log('📡 Base URL:', import.meta.env.VITE_API_URL);
     const response = await instance.get<ApiStoriesResponse>('/stories');
     console.log('📡 API 응답 성공:', response.data);
-    return response.data.data || [];
+    return (response.data as unknown as Story[]) || [];
   } catch (error) {
     console.error('❌ 전체 스토리 조회 실패:', error);
-    console.error('❌ 에러 상세:', error.response?.data);
+    console.error('❌ 에러 상세:', error?.response?.data);
     return [];
   }
 };

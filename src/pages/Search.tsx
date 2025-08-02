@@ -8,13 +8,6 @@ export const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const { data: stories = [], isLoading, error } = usePopularStories();
 
-  // 디버깅용 로그
-  console.log('🔍 Search 컴포넌트 상태:');
-  console.log('- isLoading:', isLoading);
-  console.log('- error:', error);
-  console.log('- stories 개수:', stories.length);
-  console.log('- stories 데이터:', stories);
-
   const filteredMissions = useMemo(() => {
     if (!stories.length) return [];
     if (!searchQuery.trim()) return stories;
@@ -22,8 +15,8 @@ export const Search = () => {
     const query = searchQuery.toLowerCase();
     return stories.filter(
       item =>
-        item.title.toLowerCase().includes(query) ||
-        item.category.toLowerCase().includes(query) ||
+        (item.title && item.title.toLowerCase().includes(query)) ||
+        (item.category && item.category.toLowerCase().includes(query)) ||
         (item.description && item.description.toLowerCase().includes(query))
     );
   }, [searchQuery, stories]);
@@ -93,14 +86,14 @@ export const Search = () => {
             </div>
           ) : filteredMissions.length > 0 ? (
             // 정상 데이터
-            filteredMissions.map(({ image, title, id }) => (
+            filteredMissions.map(({ thumbnailUrl, title, _id }) => (
               <div
-                key={id}
+                key={_id}
                 className="w-full flex justify-between items-center"
               >
                 <div className="flex items-center gap-3">
                   <img
-                    src={image}
+                    src={thumbnailUrl}
                     alt={title}
                     className="w-[117px] h-[75px] rounded-sm border border-[#FFFFFF30]"
                   />
@@ -108,7 +101,7 @@ export const Search = () => {
                     {title}
                   </h3>
                 </div>
-                <Link to={`/detail/${id}`}>
+                <Link to={`/detail/${_id}`}>
                   <Icon icon="Play" color="#ACACAC" size={33} />
                 </Link>
               </div>

@@ -1,70 +1,77 @@
 import { useQuery } from '@tanstack/react-query';
-import { instance } from './instance';
+import { getAllStories } from './story';
 import type { Story } from '../types/story';
 
-// 사용자가 작성한 스토리 조회
+// 사용자가 작성한 스토리 조회 (creator 필터링 방식)
 export const getMyStories = async (): Promise<Story[]> => {
-  const userId = '688e6a95932e0f5ae190c4b5';
-
   try {
-    console.log('📡 내 스토리 조회 시작');
-    console.log('📡 사용자 ID:', userId);
+    console.log('📡 내 스토리 조회 시작 (creator 필터링 방식)');
+    console.log('📡 타겟 creator ID:', '688e6a95932e0f5ae190c4b5');
 
-    // 1. 사용자 프로필에서 createdStories 확인
-    const profileResponse = await instance.get(`/users/profile/${userId}`);
-    console.log('👤 사용자 프로필:', profileResponse.data);
+    // 1. 모든 스토리를 가져오기
+    const allStories = await getAllStories();
+    console.log('📚 전체 스토리 수:', allStories.length);
+    console.log('📚 전체 스토리 데이터 샘플:', allStories.slice(0, 2));
 
-    const createdStories = profileResponse.data.user.createdStories || [];
-    console.log('📚 작성한 스토리 목록:', createdStories);
-
-    if (createdStories.length === 0) {
-      console.log('📝 작성한 스토리가 없습니다');
-      return [];
-    }
-
-    // 2. 각 스토리 ID로 상세 정보 조회 (병렬 처리)
-    const storyPromises = createdStories.map(async (storyId: string) => {
-      try {
-        const storyResponse = await instance.get(`/stories/${storyId}`);
-        return storyResponse.data;
-      } catch (error) {
-        console.warn(`스토리 ${storyId} 조회 실패:`, error);
-        return null;
+    // 2. creator 필드가 688e6a95932e0f5ae190c4b5인 스토리만 필터링
+    const targetCreatorId = '688e6a95932e0f5ae190c4b5';
+    const myStories = allStories.filter(story => {
+      console.log(
+        `🔍 스토리 체크: ${story.title} - creator: ${
+          story.creator || 'undefined'
+        }`
+      );
+      const isMyStory = story.creator === targetCreatorId;
+      if (isMyStory) {
+        console.log(
+          `✅ 내 스토리 발견: ${story.title} (creator: ${story.creator})`
+        );
       }
+      return isMyStory;
     });
 
-    const stories = await Promise.all(storyPromises);
-    const validStories = stories.filter(story => story !== null);
+    console.log('📝 내가 작성한 스토리 수:', myStories.length);
+    console.log(
+      '📝 내 스토리 목록:',
+      myStories.map(s => ({ title: s.title, _id: s._id, creator: s.creator }))
+    );
 
-    console.log('✅ 최종 내 스토리 데이터:', validStories);
-    return validStories;
+    // 3. 결과 반환
+    if (myStories.length > 0) {
+      console.log('✅ 최종 내 스토리 데이터:', myStories);
+      return myStories;
+    } else {
+      console.log('📭 작성한 스토리가 없습니다');
+      return [];
+    }
   } catch (error) {
     console.error('❌ 내 스토리 조회 실패:', error);
-    console.error('❌ 에러 상세:', error.response?.data);
+    console.error('❌ 에러 상세:', error?.response?.data);
 
     // 에러 발생시 더미 데이터 반환
+    console.warn('⚠️ 더미 데이터로 폴백');
     return [
       {
-        id: 'my-1',
+        _id: 'my-1',
         title: '내가 만든 첫 번째 괴담',
         category: '심리 스릴러',
         description: '밤늦은 시간, 홀로 남은 사무실에서...',
-        image: '/sample_nightmare.jpg',
+        thumbnailUrl: '/sample_nightmare.jpg',
+        creator: '688e6a95932e0f5ae190c4b5', // creator 필드 추가
         rating: 4.2,
         playCount: 156,
-        duration: 15,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
       {
-        id: 'my-2',
+        _id: 'my-2',
         title: '두 번째 무서운 이야기',
         category: '귀신',
         description: '오래된 집의 지하실에서 들려오는 소리...',
-        image: '/sample_2.webp',
+        thumbnailUrl: '/sample_2.webp',
+        creator: '688e6a95932e0f5ae190c4b5', // creator 필드 추가
         rating: 3.8,
         playCount: 89,
-        duration: 12,
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
