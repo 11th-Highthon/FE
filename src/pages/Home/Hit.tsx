@@ -19,6 +19,7 @@ export const Hit = ({
         <div className="w-[1px] h-full mr-1" />
         {contents.map(({ image, title, category, id }, index) => (
           <button
+            key={id}
             className="flex gap-2 shrink-0 snap-start scroll-ml-[16px]"
             onClick={() => navigate(`/detail/${id}`)}
           >

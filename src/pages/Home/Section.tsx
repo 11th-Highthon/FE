@@ -19,6 +19,7 @@ export const Section = ({ title, contents }: IProp) => {
         <div className="w-[1px] h-full snap-start mr-1" />
         {contents.map(({ image, title, category, id }) => (
           <button
+            key={id}
             className="flex items-start flex-col gap-1 shrink-0 snap-start scroll-ml-[16px]"
             onClick={() => navigate(`/detail/${id}`)}
           >

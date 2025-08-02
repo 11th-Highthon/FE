@@ -1,3 +1,4 @@
+import { useNavigate, useParams } from 'react-router-dom';
 import { Icon } from '../../components';
 import { mock_list } from '../../mocks';
 import { Section } from './Section';
@@ -8,13 +9,20 @@ const levelTable = {
   high: '상',
 };
 
-const mock_detail = mock_list[0];
-
 export const Detail = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const mock_detail =
+    mock_list.find(item => item.id === Number(id)) || mock_list[0];
+
   return (
     <div className="flex flex-col gap-[30px] size-full pt-10 overflow-auto px-4">
       <div className="flex justify-between items-center w-full h-fit">
         <div className="flex items-center gap-3">
+          <button onClick={() => navigate(-1)} className="p-1">
+            <Icon icon="ArrowLeft" color="#FFFFFF" size={24} />
+          </button>
           <img
             className="size-[54px] border border-[#FFFFFF30] rounded-lg"
             src={mock_detail.image}
@@ -34,9 +42,11 @@ export const Detail = () => {
         </div>
       </div>
       <div className="shrink-0 flex gap-1 overflow-x-auto snap-x [scroll-snap-type:mandatory]">
-        {mock_detail.screenshots?.map(screenshot => (
+        {mock_detail.screenshots?.map((screenshot, index) => (
           <img
+            key={index}
             src={screenshot}
+            alt={`${mock_detail.title} 스크린샷 ${index + 1}`}
             className="shrink-0 snap-center w-[304px] object-cover rounded-[16px] h-[200px] border border-[#FFFFFF30]"
           />
         ))}

@@ -15,8 +15,6 @@ export const NavSection = ({
     i === 'index' ? location.pathname === '/' : location.pathname.includes(i)
   ).length;
 
-  console.log(isCurrent);
-
   return (
     <Link
       to={path[0] === 'index' ? '/' : path[0]}

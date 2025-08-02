@@ -1,10 +1,11 @@
-export { default as Home } from './Home.svg?react';
-export { default as My } from './My.svg?react';
-export { default as Search } from './Search.svg?react';
-export { default as Play } from './Play.svg?react';
-export { default as Logo } from './Logo.svg?react';
+export { default as ArrowLeft } from './ArrowLeft.svg?react';
 export { default as Bell } from './Bell.svg?react';
-export { default as Share } from './Share.svg?react';
 export { default as HeartEmpty } from './HeartEmpty.svg?react';
 export { default as HeartFilled } from './HeartFilled.svg?react';
+export { default as Home } from './Home.svg?react';
+export { default as Logo } from './Logo.svg?react';
+export { default as My } from './My.svg?react';
+export { default as Play } from './Play.svg?react';
+export { default as Search } from './Search.svg?react';
+export { default as Share } from './Share.svg?react';
 export { default as SoundOnly } from './SoundOnly.svg?react';
