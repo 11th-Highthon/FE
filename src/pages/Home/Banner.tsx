@@ -1,9 +1,9 @@
 import { Link } from 'react-router-dom';
 import { Icon, EmptyBannerCard } from '../../components';
-import { useAllStories } from '../../apis';
+import { usePopularStories } from '../../apis';
 
 export const Banner = () => {
-  const { data: stories = [], isLoading, error } = useAllStories();
+  const { data: stories = [], isLoading, error } = usePopularStories();
 
   // 최소 3개의 항목을 보장하기 위해 실제 데이터와 빈 카드를 조합
   const getDisplayItems = () => {

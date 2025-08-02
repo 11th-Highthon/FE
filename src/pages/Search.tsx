@@ -1,12 +1,19 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Icon, EmptyCard } from '../components';
-import { useAllStories } from '../apis';
+import { usePopularStories } from '../apis';
 import { keywords } from '../mocks';
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
-  const { data: stories = [], isLoading, error } = useAllStories();
+  const { data: stories = [], isLoading, error } = usePopularStories();
+
+  // 디버깅용 로그
+  console.log('🔍 Search 컴포넌트 상태:');
+  console.log('- isLoading:', isLoading);
+  console.log('- error:', error);
+  console.log('- stories 개수:', stories.length);
+  console.log('- stories 데이터:', stories);
 
   const filteredMissions = useMemo(() => {
     if (!stories.length) return [];
@@ -59,7 +66,7 @@ export const Search = () => {
             ? `'${searchQuery}' 검색 결과 (${filteredMissions.length}개)`
             : isLoading
             ? '미션 목록 로딩중...'
-            : '지금 많이 플레이되는 미션'}
+            : '인기 미션에서 검색'}
         </h2>
         <div className="w-full flex flex-col gap-3">
           {isLoading ? (

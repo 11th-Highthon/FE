@@ -6,10 +6,14 @@ import { isAuthenticated } from '../utils';
 // 모든 스토리 조회
 export const getAllStories = async (): Promise<Story[]> => {
   try {
+    console.log('📡 API 요청 시작: /stories');
+    console.log('📡 Base URL:', import.meta.env.VITE_API_URL);
     const response = await instance.get<ApiStoriesResponse>('/stories');
+    console.log('📡 API 응답 성공:', response.data);
     return response.data.data || [];
   } catch (error) {
-    console.warn('전체 스토리 조회 실패, 빈 배열 반환:', error);
+    console.error('❌ 전체 스토리 조회 실패:', error);
+    console.error('❌ 에러 상세:', error.response?.data);
     return [];
   }
 };
@@ -17,10 +21,20 @@ export const getAllStories = async (): Promise<Story[]> => {
 // 인기 스토리 조회
 export const getPopularStories = async (): Promise<Story[]> => {
   try {
+    console.log('📡 인기 스토리 API 요청 시작: /stories/popular');
+    console.log('📡 Base URL:', import.meta.env.VITE_API_URL);
     const response = await instance.get<ApiStoriesResponse>('/stories/popular');
-    return response.data.data || [];
+    console.log('📡 인기 스토리 API 응답 성공:', response.data);
+
+    // API 응답이 직접 배열인 경우 처리
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+
+    return response.data.data || response.data || [];
   } catch (error) {
-    console.warn('인기 스토리 조회 실패, 빈 배열 반환:', error);
+    console.error('❌ 인기 스토리 조회 실패:', error);
+    console.error('❌ 에러 상세:', error.response?.data);
     return [];
   }
 };
@@ -28,21 +42,41 @@ export const getPopularStories = async (): Promise<Story[]> => {
 // 새로운 스토리 조회
 export const getNewStories = async (): Promise<Story[]> => {
   try {
+    console.log('📡 새 스토리 API 요청 시작: /stories/new');
     const response = await instance.get<ApiStoriesResponse>('/stories/new');
-    return response.data.data || [];
+    console.log('📡 새 스토리 API 응답 성공:', response.data);
+
+    // API 응답이 직접 배열인 경우 처리
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+
+    return response.data.data || response.data || [];
   } catch (error) {
-    console.warn('새로운 스토리 조회 실패, 빈 배열 반환:', error);
+    console.error('❌ 새로운 스토리 조회 실패:', error);
+    console.error('❌ 에러 상세:', error.response?.data);
     return [];
   }
 };
 
-// 추천 스토리 조회 (사용자 기반 추천 - 일단 전체 스토리를 사용)
+// 추천 스토리 조회 (인기 스토리를 추천으로 사용)
 export const getRecommendedStories = async (): Promise<Story[]> => {
   try {
-    const response = await instance.get<ApiStoriesResponse>('/stories');
-    return response.data.data || [];
+    console.log(
+      '📡 추천 스토리 API 요청 시작: /stories/popular (추천 대신 인기 사용)'
+    );
+    const response = await instance.get<ApiStoriesResponse>('/stories/popular');
+    console.log('📡 추천 스토리 API 응답 성공:', response.data);
+
+    // API 응답이 직접 배열인 경우 처리
+    if (Array.isArray(response.data)) {
+      return response.data;
+    }
+
+    return response.data.data || response.data || [];
   } catch (error) {
-    console.warn('추천 스토리 조회 실패, 빈 배열 반환:', error);
+    console.error('❌ 추천 스토리 조회 실패:', error);
+    console.error('❌ 에러 상세:', error.response?.data);
     return [];
   }
 };
@@ -77,13 +111,12 @@ export const useNewStories = () => {
   });
 };
 
-// 추천 스토리 조회 hook
+// 추천 스토리 조회 hook (인증 없이 호출)
 export const useRecommendedStories = () => {
   return useQuery({
     queryKey: ['stories', 'recommended'],
     queryFn: getRecommendedStories,
     staleTime: 15 * 60 * 1000, // 15분
     retry: false, // 실패시 재시도 하지 않음
-    enabled: isAuthenticated(), // 로그인된 사용자만 호출
   });
 };
