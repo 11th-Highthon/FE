@@ -9,3 +9,6 @@ export { default as Play } from './Play.svg?react';
 export { default as Search } from './Search.svg?react';
 export { default as Share } from './Share.svg?react';
 export { default as SoundOnly } from './SoundOnly.svg?react';
+export { default as Edit } from './Edit.svg?react';
+export { default as MyStory } from './MyStory.svg?react';
+export { default as Plus } from './Plus.svg?react';
