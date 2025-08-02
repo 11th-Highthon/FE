@@ -1,22 +1,25 @@
 import { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Icon } from '../components';
-import { keywords, mock_list } from '../mocks';
+import { Icon, EmptyCard } from '../components';
+import { useAllStories } from '../apis';
+import { keywords } from '../mocks';
 
 export const Search = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const { data: stories = [], isLoading, error } = useAllStories();
 
   const filteredMissions = useMemo(() => {
-    if (!searchQuery.trim()) return mock_list;
+    if (!stories.length) return [];
+    if (!searchQuery.trim()) return stories;
 
     const query = searchQuery.toLowerCase();
-    return mock_list.filter(
+    return stories.filter(
       item =>
         item.title.toLowerCase().includes(query) ||
         item.category.toLowerCase().includes(query) ||
-        item.introduce.toLowerCase().includes(query)
+        (item.description && item.description.toLowerCase().includes(query))
     );
-  }, [searchQuery]);
+  }, [searchQuery, stories]);
 
   const handleKeywordClick = (keyword: string) => {
     setSearchQuery(keyword);
@@ -54,10 +57,35 @@ export const Search = () => {
         <h2 className="text-[18px] font-semibold text-[#FFFFFF]">
           {searchQuery
             ? `'${searchQuery}' 검색 결과 (${filteredMissions.length}개)`
+            : isLoading
+            ? '미션 목록 로딩중...'
             : '지금 많이 플레이되는 미션'}
         </h2>
         <div className="w-full flex flex-col gap-3">
-          {filteredMissions.length > 0 ? (
+          {isLoading ? (
+            // 로딩 상태
+            Array.from({ length: 3 }).map((_, index) => (
+              <div
+                key={index}
+                className="w-full flex justify-between items-center"
+              >
+                <div className="flex items-center gap-3">
+                  <EmptyCard width="w-[117px]" height="h-[75px]" />
+                  <div className="text-[12px] font-medium text-[#CFCFCF]">
+                    로딩 중...
+                  </div>
+                </div>
+              </div>
+            ))
+          ) : error ? (
+            // 에러 상태
+            <div className="text-center py-8">
+              <p className="text-[#ACACAC] text-[14px]">
+                데이터를 불러오는데 실패했습니다.
+              </p>
+            </div>
+          ) : filteredMissions.length > 0 ? (
+            // 정상 데이터
             filteredMissions.map(({ image, title, id }) => (
               <div
                 key={id}
@@ -78,10 +106,18 @@ export const Search = () => {
                 </Link>
               </div>
             ))
-          ) : (
+          ) : searchQuery ? (
+            // 검색 결과 없음
             <div className="text-center py-8">
               <p className="text-[#ACACAC] text-[14px]">
-                검색 결과가 없습니다.
+                '{searchQuery}' 검색 결과가 없습니다.
+              </p>
+            </div>
+          ) : (
+            // 데이터가 없음 (전체)
+            <div className="text-center py-8">
+              <p className="text-[#ACACAC] text-[14px]">
+                아직 등록된 미션이 없습니다.
               </p>
             </div>
           )}

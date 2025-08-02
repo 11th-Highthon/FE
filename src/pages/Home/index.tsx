@@ -1,5 +1,4 @@
 import { Icon, Logo } from '../../components';
-import { mock_list } from '../../mocks';
 import { Banner } from './Banner';
 import { Hit } from './Hit';
 import { Section } from './Section';
@@ -12,10 +11,10 @@ export const Home = () => {
           <Logo />
           <Icon icon="Bell" color="#FFFFFF" size={24} classname="mt-1" />
         </div>
-        <Banner contents={mock_list} />
-        <Hit contents={mock_list} />
-        <Section title="회원님을 위한 추천 미션" contents={mock_list} />
-        <Section title="새로 뜬 미션" contents={mock_list} />
+        <Banner />
+        <Hit />
+        <Section title="회원님을 위한 추천 미션" type="recommended" />
+        <Section title="새로 뜬 미션" type="new" />
       </div>
       <div className="fixed z-10 size-full top-0 overflow-hidden bg-black">
         <img

@@ -1,5 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
-import { instance, setAuthToken } from './instance';
+import { instance, setAuthToken, clearAuthToken } from './instance';
 import type {
   LoginRequest,
   RegisterRequest,
@@ -7,16 +7,14 @@ import type {
 } from '../types/auth';
 
 // 로그인 API
-export const login = async (data: LoginRequest): Promise<AuthResponse> => {
-  const response = await instance.post<AuthResponse>('/users/login', data);
+export const login = async (data: LoginRequest): Promise<any> => {
+  const response = await instance.post('/users/login', data);
   return response.data;
 };
 
 // 회원가입 API
-export const register = async (
-  data: RegisterRequest
-): Promise<AuthResponse> => {
-  const response = await instance.post<AuthResponse>('/users/register', data);
+export const register = async (data: RegisterRequest): Promise<any> => {
+  const response = await instance.post('/users/register', data);
   return response.data;
 };
 
@@ -25,11 +23,27 @@ export const useLogin = () => {
   return useMutation({
     mutationFn: login,
     onSuccess: data => {
-      if (data.success && data.token) {
-        setAuthToken(data.token);
-        // 토큰을 localStorage에 저장
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+      // 다양한 응답 구조에 대응
+      let token = null;
+      let user = null;
+
+      if (data.token) {
+        token = data.token;
+        user = data.user || data;
+      } else if (data.data && data.data.token) {
+        token = data.data.token;
+        user = data.data.user || data.data;
+      } else if (data.accessToken) {
+        token = data.accessToken;
+        user = data;
+      }
+
+      if (token) {
+        setAuthToken(token);
+        localStorage.setItem('auth_token', token);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
       }
     },
     onError: error => {
@@ -43,11 +57,27 @@ export const useRegister = () => {
   return useMutation({
     mutationFn: register,
     onSuccess: data => {
-      if (data.success && data.token) {
-        setAuthToken(data.token);
-        // 토큰을 localStorage에 저장
-        localStorage.setItem('auth_token', data.token);
-        localStorage.setItem('user', JSON.stringify(data.user));
+      // 다양한 응답 구조에 대응
+      let token = null;
+      let user = null;
+
+      if (data.token) {
+        token = data.token;
+        user = data.user || data;
+      } else if (data.data && data.data.token) {
+        token = data.data.token;
+        user = data.data.user || data.data;
+      } else if (data.accessToken) {
+        token = data.accessToken;
+        user = data;
+      }
+
+      if (token) {
+        setAuthToken(token);
+        localStorage.setItem('auth_token', token);
+        if (user) {
+          localStorage.setItem('user', JSON.stringify(user));
+        }
       }
     },
     onError: error => {
@@ -60,5 +90,5 @@ export const useRegister = () => {
 export const logout = () => {
   localStorage.removeItem('auth_token');
   localStorage.removeItem('user');
-  setAuthToken('');
+  clearAuthToken();
 };
